@@ -1,4 +1,4 @@
-package team.sparta.ubis
+package org.ubis.ubis
 
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
