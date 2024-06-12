@@ -3,7 +3,6 @@ package org.ubis.ubis.domain.order.service
 import jakarta.transaction.Transactional
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
-import org.ubis.ubis.domain.order.dto.CreateOrderRequest
 import org.ubis.ubis.domain.order.dto.OrderResponse
 import org.ubis.ubis.domain.order.model.Order
 import org.ubis.ubis.domain.order.model.toOrderResponse
