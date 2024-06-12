@@ -1,8 +1,8 @@
 package org.ubis.ubis.security.oauth
 
-import org.ubis.ubis.common.config.type.OAuth2Provider
 import jakarta.transaction.NotSupportedException
 import org.springframework.stereotype.Service
+import org.ubis.ubis.common.config.type.OAuth2Provider
 
 @Service
 class OAuth2ClientService(

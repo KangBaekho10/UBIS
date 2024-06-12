@@ -1,5 +1,6 @@
 package org.ubis.ubis.domain.member.dto
 
-class MemberRequest {
-    // TODO
-}
+data class MemberRequest (
+    val email: String,
+    val password: String
+)

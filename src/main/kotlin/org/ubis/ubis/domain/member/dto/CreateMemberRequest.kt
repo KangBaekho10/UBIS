@@ -19,5 +19,5 @@ data class CreateMemberRequest(
     )
     val password: String,
     val phoneNumber: String,
-    val role: Role
+    val role: String
 )
