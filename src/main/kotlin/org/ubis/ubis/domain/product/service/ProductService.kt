@@ -14,6 +14,12 @@ import org.ubis.ubis.domain.product.repository.ProductRepository
 class ProductService(
     private val productRepository: ProductRepository
 ) {
+
+    fun getProductEntity(productId:Long):Product{
+        return productRepository.findByIdOrNull(productId)
+            ?: throw RuntimeException("Product with ID $productId not found")
+    }
+
     fun getProductList(): List<ProductResponse> {
         return productRepository.findAll().map { it.toProductResponse() }
     }

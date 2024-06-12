@@ -7,6 +7,6 @@ data class ProductResponse (
     val name: String,
     val description: String,
     val price: Float,
-    val createAt: LocalDateTime,
+    val createdAt: LocalDateTime,
     val imgs: String
 )
