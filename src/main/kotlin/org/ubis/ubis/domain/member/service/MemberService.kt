@@ -37,6 +37,12 @@ class MemberService(
         }
 
         if (updateMemberRequest.phoneNumber != null) {
+            val isExistPhoneNumber = memberRepository.existsByPhoneNumber(updateMemberRequest.phoneNumber)
+
+            if (isExistPhoneNumber) { // DB에 전화번호가 있다면
+                throw AlreadyExistsException(updateMemberRequest.phoneNumber, "전화번호")
+            }
+
             member.phoneNumber = updateMemberRequest.phoneNumber
         }
 
@@ -45,7 +51,11 @@ class MemberService(
             val pwHistory = member.pwHistory.split(",").toMutableList() // [hh23,  dddd,  1234]
 
             // 수정 요청한 비밀번호가 이전에 사용했던 적이 있는지 확인
-            if (pwHistory.contains(updateMemberRequest.password)) {
+            val isExistPassword = pwHistory.filter { passwordEncoder.matches(updateMemberRequest.password, it) }.size
+
+            println("isExistPassword: $isExistPassword")
+
+            if (isExistPassword > 0) {
                 throw ReusedPasswordException("이전에 사용했던 비밀번호는 사용할 수 없습니다.")
             }
 
@@ -55,7 +65,7 @@ class MemberService(
                 pwHistory.removeFirst()
             }
 
-            pwHistory.add(updateMemberRequest.password) // TODO: passwordEncode로 변경 후 add 해야 함
+            pwHistory.add(passwordEncoder.encode(updateMemberRequest.password))
 
             // 변경된 비밀번호 List를 비밀번호 이력에 추가
             member.pwHistory = pwHistory.joinToString(",")
@@ -79,7 +89,7 @@ class MemberService(
             throw AlreadyExistsException(createMemberRequest.phoneNumber, "전화번호")
         }
 
-        val password = createMemberRequest.password // TODO: passwordEncode
+        val password = passwordEncoder.encode(createMemberRequest.password)
 
         return memberRepository.save(
             Member(
