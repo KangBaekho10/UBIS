@@ -1,6 +1,7 @@
 package org.ubis.ubis.domain.member.service
 
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.ubis.ubis.domain.exception.AlreadyExistsException
@@ -15,7 +16,8 @@ import org.ubis.ubis.domain.member.repository.MemberRepository
 
 @Service
 class MemberService(
-    private val memberRepository: MemberRepository
+    private val memberRepository: MemberRepository,
+    private val passwordEncoder: PasswordEncoder
 ) {
     fun getMember(memberId: Long): MemberResponse {
         val member = memberRepository.findByIdOrNull(memberId) ?: throw ModelNotFoundException("Member", memberId)
@@ -89,5 +91,13 @@ class MemberService(
             )
         ).toResponse()
 
+    }
+
+    fun passwordCheck(memberId: Long, password: String) {
+        val member = memberRepository.findByIdOrNull(memberId) ?: throw ModelNotFoundException("Member", memberId)
+
+        if (!passwordEncoder.matches(password, member.password)) {
+            throw IllegalArgumentException("비밀번호가 일치하지 않습니다.")
+        }
     }
 }

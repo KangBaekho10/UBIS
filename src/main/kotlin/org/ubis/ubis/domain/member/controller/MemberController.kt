@@ -32,7 +32,13 @@ class MemberController(
         return ResponseEntity.status(HttpStatus.OK).body(memberService.getMember(memberId))
     }
 
-    // TODO: 비밀번호를 확인하는 함수 필요
+    // TODO: security 구현 완료 후 파라미터 변경
+    @PostMapping("/password-check")
+    fun passwordCheck(@RequestParam memberId: Long,
+                      @RequestBody password: String): ResponseEntity<Unit> {
+        memberService.passwordCheck(memberId, password)
+        return ResponseEntity.status(HttpStatus.OK).build()
+    }
 
     @PutMapping
     fun updateMember(
