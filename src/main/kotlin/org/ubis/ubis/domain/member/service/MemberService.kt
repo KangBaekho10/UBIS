@@ -3,10 +3,13 @@ package org.ubis.ubis.domain.member.service
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.ubis.ubis.domain.exception.AlreadyExistsException
 import org.ubis.ubis.domain.exception.ModelNotFoundException
 import org.ubis.ubis.domain.exception.ReusedPasswordException
+import org.ubis.ubis.domain.member.dto.CreateMemberRequest
 import org.ubis.ubis.domain.member.dto.MemberResponse
 import org.ubis.ubis.domain.member.dto.UpdateMemberRequest
+import org.ubis.ubis.domain.member.model.Member
 import org.ubis.ubis.domain.member.model.toResponse
 import org.ubis.ubis.domain.member.repository.MemberRepository
 
@@ -58,5 +61,33 @@ class MemberService(
         }
 
         return member.toResponse()
+    }
+
+    fun createMember(createMemberRequest: CreateMemberRequest): MemberResponse {
+
+        val isExistEmail = memberRepository.existsByEmail(createMemberRequest.email)
+
+        if (isExistEmail) { // 이미 존재하는 이메일일 경우 예외 발생
+            throw AlreadyExistsException(createMemberRequest.email, "이메일")
+        }
+
+        val isExistPhoneNumber = memberRepository.existsByPhoneNumber(createMemberRequest.phoneNumber)
+
+        if (isExistPhoneNumber) { // 이미 존재하는 전화번호일 경우 예외 발생
+            throw AlreadyExistsException(createMemberRequest.phoneNumber, "전화번호")
+        }
+
+        val password = createMemberRequest.password // TODO: passwordEncode
+
+        return memberRepository.save(
+            Member(
+                name = createMemberRequest.name,
+                email = createMemberRequest.email,
+                password = password,
+                phoneNumber = createMemberRequest.phoneNumber,
+                pwHistory = password
+            )
+        ).toResponse()
+
     }
 }
