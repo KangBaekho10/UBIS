@@ -75,6 +75,7 @@ class MemberService(
         return member.toResponse()
     }
 
+    @Transactional
     fun createMember(createMemberRequest: CreateMemberRequest): MemberResponse {
 
         val isExistEmail = memberRepository.existsByEmail(createMemberRequest.email)
