@@ -17,13 +17,17 @@ class ProductService(
     private val productRepository: ProductRepository,
 ) {
 
+    fun searchProductList(pageable: Pageable,name:String?):Page<ProductResponse> {
+        return productRepository.findProductList(pageable,name).map { it.toProductResponse() }
+    }
+
     fun getProductEntity(productId:Long):Product{
         return productRepository.findByIdOrNull(productId)
             ?: throw RuntimeException("Product with ID $productId not found")
     }
 
-    fun getProductList(pageable: Pageable): Page<ProductResponse> {
-        return productRepository.findAll(pageable).map { it.toProductResponse() }
+    fun getProductList(pageable: Pageable,name:String?): Page<ProductResponse> {
+        return productRepository.findProductList(pageable,name).map { it.toProductResponse() }
     }
 
     fun getProduct(productId: Long): ProductResponse {

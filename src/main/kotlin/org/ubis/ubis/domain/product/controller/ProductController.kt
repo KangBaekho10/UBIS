@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import org.ubis.ubis.domain.product.dto.CreateProductRequest
 import org.ubis.ubis.domain.product.dto.ProductResponse
@@ -25,9 +26,10 @@ class ProductController(
 
     @GetMapping
     fun getProductList(
-        @PageableDefault(size = 15, sort = ["createdAt"]) pageable: Pageable
+        @PageableDefault(size = 15, sort = ["createdAt"]) pageable: Pageable,
+        @RequestParam(name="name", required = false) name: String?
     ): ResponseEntity<Page<ProductResponse>> {
-        return ResponseEntity.ok(productService.getProductList(pageable))
+        return ResponseEntity.ok(productService.getProductList(pageable,name))
     }
 
     @GetMapping("/{productId}")
