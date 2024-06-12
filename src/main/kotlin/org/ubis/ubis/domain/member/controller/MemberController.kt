@@ -21,7 +21,7 @@ class MemberController(
     // TODO: security 구현 완료 후 파라미터 변경
     @GetMapping
     fun getMember(@RequestParam memberId: Long): ResponseEntity<MemberResponse> {
-        return ResponseEntity.status(HttpStatus.CREATED).body(memberService.getMember(memberId))
+        return ResponseEntity.status(HttpStatus.OK).body(memberService.getMember(memberId))
     }
 
     // TODO: 비밀번호를 확인하는 함수 필요
