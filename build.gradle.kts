@@ -7,6 +7,9 @@ plugins {
     kotlin("jvm") version "1.9.23"
     kotlin("plugin.spring") version "1.9.23"
     kotlin("plugin.jpa") version "1.9.23"
+    kotlin("plugin.noarg") version "1.9.23"
+    kotlin("plugin.allopen") version "1.9.23"
+    kotlin("kapt") version "1.9.23"
 }
 group = "team.sparta.ubis"
 version = "0.0.1-SNAPSHOT"
@@ -24,7 +27,7 @@ configurations {
 repositories {
     mavenCentral()
 }
-
+val queryDslVersion = "5.0.0"
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
@@ -36,6 +39,11 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
+    //Dsl
+    implementation("com.querydsl:querydsl-jpa:$queryDslVersion:jakarta")
+    kapt("com.querydsl:querydsl-apt:$queryDslVersion:jakarta")
+
+    //DB
     runtimeOnly("org.postgresql:postgresql")
 }
 
@@ -49,6 +57,7 @@ tasks.withType<KotlinCompile> {
 tasks.withType<Test> {
     useJUnitPlatform()
 }
+
 
 noArg {
     annotation("jakarta.persistence.Entity")

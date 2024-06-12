@@ -1,6 +1,8 @@
 package org.ubis.ubis.domain.product.service
 
 import jakarta.transaction.Transactional
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.ubis.ubis.domain.product.dto.CreateProductRequest
@@ -12,10 +14,16 @@ import org.ubis.ubis.domain.product.repository.ProductRepository
 
 @Service
 class ProductService(
-    private val productRepository: ProductRepository
+    private val productRepository: ProductRepository,
 ) {
-    fun getProductList(): List<ProductResponse> {
-        return productRepository.findAll().map { it.toProductResponse() }
+
+    fun getProductEntity(productId:Long):Product{
+        return productRepository.findByIdOrNull(productId)
+            ?: throw RuntimeException("Product with ID $productId not found")
+    }
+
+    fun getProductList(pageable: Pageable): Page<ProductResponse> {
+        return productRepository.findAll(pageable).map { it.toProductResponse() }
     }
 
     fun getProduct(productId: Long): ProductResponse {
