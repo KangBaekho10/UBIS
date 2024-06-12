@@ -1,6 +1,7 @@
 package org.ubis.ubis.domain.member.model
 
 import jakarta.persistence.*
+import org.ubis.ubis.domain.member.dto.MemberResponse
 
 class Member(
     val email: String,
@@ -16,4 +17,13 @@ class Member(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null
+}
+
+fun Member.toResponse(): MemberResponse {
+    return MemberResponse(
+        id = id!!,
+        email = email,
+        name = name,
+        phoneNumber = phoneNumber
+    )
 }
