@@ -13,5 +13,5 @@ class SocialMember(
     @Enumerated(EnumType.STRING)
     val provider: OAuth2Provider,
     val providerId: String,
-    val email: String
+    val nickname: String
 )
