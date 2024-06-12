@@ -6,12 +6,13 @@ import org.springframework.web.bind.annotation.*
 import org.ubis.ubis.domain.review.dto.*
 import org.ubis.ubis.domain.review.service.ReviewService
 
+@RequestMapping("/products/{productId}/reviews")
 @RestController
 class ReviewController(
     private val reviewService : ReviewService
 ) {
 
-    @PostMapping("/products/{productId}/reviews")
+    @PostMapping
     fun createReview(
         @PathVariable productId: Long,
         @RequestBody request: ReviewRequest,
@@ -21,7 +22,7 @@ class ReviewController(
             .body(reviewService.createReview(productId, request))
     }
 
-    @GetMapping("/products/{productId}/reviews")
+    @GetMapping
     fun getReviewList(
         @PathVariable productId: Long,
     ):ResponseEntity<List<ReviewResponse>>{
@@ -30,8 +31,9 @@ class ReviewController(
             .body(reviewService.getReviewList(productId))
     }
 
-    @PutMapping("/reviews/{reviewId}")
+    @PutMapping("/{reviewId}")
     fun updateReview(
+        @PathVariable productId: Long,
         @PathVariable reviewId: Long,
         @RequestBody request: ReviewRequest
     ):ResponseEntity<Unit>{
@@ -40,8 +42,9 @@ class ReviewController(
             .body(reviewService.updateReview(reviewId, request))
     }
 
-    @DeleteMapping("/reviews/{reviewId}")
+    @DeleteMapping("/{reviewId}")
     fun deleteReview(
+        @PathVariable productId: Long,
         @PathVariable reviewId: Long,
     ):ResponseEntity<Unit>{
         return ResponseEntity

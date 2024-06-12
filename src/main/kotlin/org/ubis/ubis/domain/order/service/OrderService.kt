@@ -26,12 +26,12 @@ class OrderService(
     }
 
     @Transactional
-    fun createOrder(productId: Long, request: CreateOrderRequest): OrderResponse {
+    fun createOrder(productId: Long): OrderResponse {
         val product =
             productRepository.findByIdOrNull(productId)
                 ?: throw RuntimeException("Product with ID $productId not found")
         val order = Order(
-            productPrice = request.productPrice,
+            productPrice = product.price,
             product = product
         )
         product.createOrder(order)

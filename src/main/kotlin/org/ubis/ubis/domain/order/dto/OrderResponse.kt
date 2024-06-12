@@ -5,5 +5,5 @@ import java.time.LocalDateTime
 data class OrderResponse (
     val id: Long,
     val createdAt: LocalDateTime,
-    val productPrice: Int
+    val productPrice: Float
 )

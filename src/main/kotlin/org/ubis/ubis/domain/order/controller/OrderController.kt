@@ -33,17 +33,16 @@ class OrderController(
     @PostMapping
     fun createOrder(
         @PathVariable productId: Long,
-        @RequestBody request: CreateOrderRequest
     ): ResponseEntity<OrderResponse> {
-        val order: OrderResponse = orderService.createOrder(productId, request)
+        val order: OrderResponse = orderService.createOrder(productId)
         return ResponseEntity.ok(order)
     }
 
     @DeleteMapping("{orderId}")
     fun deleteOrder(
-        @PathVariable orderId: Long,
-        @PathVariable productId: Long
+        @PathVariable productId: Long,
+        @PathVariable orderId: Long
     ): ResponseEntity<Unit> {
-        return ResponseEntity.ok(orderService.deleteOrder(orderId, productId))
+        return ResponseEntity.ok(orderService.deleteOrder(productId,orderId))
     }
 }

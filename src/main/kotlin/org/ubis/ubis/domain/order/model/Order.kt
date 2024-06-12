@@ -21,7 +21,7 @@ class Order(
     var createdAt: LocalDateTime = LocalDateTime.now(),
 
     @Column(name = "product_price")
-    var productPrice: Int,
+    var productPrice: Float,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
