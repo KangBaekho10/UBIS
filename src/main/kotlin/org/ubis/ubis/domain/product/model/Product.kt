@@ -1,6 +1,7 @@
 package org.ubis.ubis.domain.product.model
 
 import jakarta.persistence.*
+import org.ubis.ubis.domain.order.model.Order
 import org.ubis.ubis.domain.product.dto.ProductResponse
 import java.time.LocalDateTime
 
@@ -23,10 +24,20 @@ class Product(
     @Column(name = "imgs")
     var imgs: String,
 
+    @OneToMany(mappedBy = "product", cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.LAZY)
+    var orders: MutableList<Order> = mutableListOf()
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null
+
+    fun createOrder(order: Order) {
+        orders.add(order)
+    }
+
+    fun deleteOrder(order: Order) {
+        orders.remove(order)
+    }
 }
 
 fun Product.toProductResponse(): ProductResponse = ProductResponse(
