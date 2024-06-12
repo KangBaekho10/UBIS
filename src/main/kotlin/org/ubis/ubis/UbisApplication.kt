@@ -1,4 +1,4 @@
-package team.sparta.ubis
+package org.ubis.ubis
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
