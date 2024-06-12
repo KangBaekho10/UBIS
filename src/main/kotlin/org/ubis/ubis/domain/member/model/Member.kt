@@ -17,7 +17,7 @@ class Member(
     var role: Role = Role.CUSTOMER,
 
     @Column(name = "pw_history")
-    val pwHistory: String
+    var pwHistory: String
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
