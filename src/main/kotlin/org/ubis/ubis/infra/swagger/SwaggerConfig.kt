@@ -21,6 +21,6 @@ class SwaggerConfig {
         val securityRequirement = SecurityRequirement().addList("Bearer Token")
         return OpenAPI().components(Components().addSecuritySchemes("Bearer Token", apiKey))
             .addSecurityItem(securityRequirement)
-            .info(Info().title("Todo API").description("Todo API schema").version("1.0.0"))
+            .info(Info().title("UBIS API").description("UBIS API schema").version("1.0.0"))
     }
 }
