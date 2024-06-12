@@ -1,13 +1,16 @@
 package org.ubis.ubis.domain.member.controller
 
+import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import org.ubis.ubis.domain.member.dto.CreateMemberRequest
 import org.ubis.ubis.domain.member.dto.MemberResponse
 import org.ubis.ubis.domain.member.dto.UpdateMemberRequest
 import org.ubis.ubis.domain.member.service.MemberService
@@ -17,6 +20,11 @@ import org.ubis.ubis.domain.member.service.MemberService
 class MemberController(
     private val memberService: MemberService
 ) {
+
+    @PostMapping
+    fun createMember(@Valid @RequestBody createMemberRequest: CreateMemberRequest): ResponseEntity<MemberResponse> {
+        return ResponseEntity.status(HttpStatus.CREATED).body(memberService.createMember(createMemberRequest))
+    }
 
     // TODO: security 구현 완료 후 파라미터 변경
     @GetMapping
@@ -29,7 +37,8 @@ class MemberController(
     @PutMapping
     fun updateMember(
         @RequestParam memberId: Long,
-        @RequestBody updateMemberRequest: UpdateMemberRequest) : ResponseEntity<MemberResponse> {
+        @RequestBody updateMemberRequest: UpdateMemberRequest
+    ): ResponseEntity<MemberResponse> {
         return ResponseEntity.status(HttpStatus.OK).body(memberService.updateMember(memberId, updateMemberRequest))
     }
 }
