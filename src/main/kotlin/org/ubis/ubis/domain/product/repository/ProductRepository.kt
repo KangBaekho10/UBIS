@@ -5,6 +5,6 @@ import org.ubis.ubis.domain.product.model.Product
 
 interface ProductRepository
     : JpaRepository<Product, Long>,
-    CustomProductRepository {
+    CustomProductRepository{
 
     }

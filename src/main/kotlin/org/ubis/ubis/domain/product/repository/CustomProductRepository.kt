@@ -5,5 +5,5 @@ import org.springframework.data.domain.Pageable
 import org.ubis.ubis.domain.product.model.Product
 
 interface CustomProductRepository {
-    fun findAllPageableOrder(pageable: Pageable): Page<Product>
+   // fun findAll(pageable: Pageable): Page<Product>
 }

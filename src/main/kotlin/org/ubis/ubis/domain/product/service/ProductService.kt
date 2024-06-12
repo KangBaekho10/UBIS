@@ -23,7 +23,7 @@ class ProductService(
     }
 
     fun getProductList(pageable: Pageable): Page<ProductResponse> {
-        return productRepository.findAllPageableOrder(pageable).map { it.toProductResponse() }
+        return productRepository.findAll(pageable).map { it.toProductResponse() }
     }
 
     fun getProduct(productId: Long): ProductResponse {

@@ -25,7 +25,7 @@ class ProductController(
 
     @GetMapping
     fun getProductList(
-        @PageableDefault(size = 15, sort = ["created_at"]) pageable: Pageable
+        @PageableDefault(size = 15, sort = ["createdAt"]) pageable: Pageable
     ): ResponseEntity<Page<ProductResponse>> {
         return ResponseEntity.ok(productService.getProductList(pageable))
     }

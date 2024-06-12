@@ -58,6 +58,7 @@ tasks.withType<Test> {
     useJUnitPlatform()
 }
 
+
 noArg {
     annotation("jakarta.persistence.Entity")
     annotation("jakarta.persistence.MappedSuperclass")
