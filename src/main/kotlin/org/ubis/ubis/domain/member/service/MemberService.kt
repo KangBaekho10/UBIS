@@ -111,4 +111,10 @@ class MemberService(
             throw IllegalArgumentException("비밀번호가 일치하지 않습니다.")
         }
     }
+
+    @Transactional
+    fun deleteMember(memberId: Long) {
+        val member = memberRepository.findByIdOrNull(memberId) ?: throw ModelNotFoundException("Member", memberId)
+        memberRepository.delete(member)
+    }
 }

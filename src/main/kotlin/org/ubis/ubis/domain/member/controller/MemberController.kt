@@ -37,11 +37,19 @@ class MemberController(
         return ResponseEntity.status(HttpStatus.OK).build()
     }
 
+    // TODO: security 구현 완료 후 파라미터 변경
     @PutMapping
     fun updateMember(
         @RequestParam memberId: Long,
         @Valid @RequestBody updateMemberRequest: UpdateMemberRequest
     ): ResponseEntity<MemberResponse> {
         return ResponseEntity.status(HttpStatus.OK).body(memberService.updateMember(memberId, updateMemberRequest))
+    }
+
+    // TODO: security 구현 완료 후 파라미터 변경
+    @DeleteMapping
+    fun deleteMember(@RequestParam memberId: Long): ResponseEntity<Unit> {
+        memberService.deleteMember(memberId)
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
     }
 }
