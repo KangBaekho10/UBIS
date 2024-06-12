@@ -3,6 +3,8 @@ package org.ubis.ubis.domain.member.model
 import jakarta.persistence.*
 import org.ubis.ubis.domain.member.dto.MemberResponse
 
+@Entity
+@Table(name = "member")
 class Member(
     val email: String,
     var name: String,
