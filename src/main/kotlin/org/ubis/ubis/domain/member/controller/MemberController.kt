@@ -22,8 +22,9 @@ class MemberController(
 ) {
 
     @PostMapping
-    fun createMember(@Valid @RequestBody createMemberRequest: CreateMemberRequest): ResponseEntity<MemberResponse> {
-        return ResponseEntity.status(HttpStatus.CREATED).body(memberService.createMember(createMemberRequest))
+    fun createMember(@Valid @RequestBody createMemberRequest: CreateMemberRequest): ResponseEntity<String> {
+        memberService.createMember(createMemberRequest)
+        return ResponseEntity.status(HttpStatus.CREATED).body("회원가입이 완료되었습니다.")
     }
 
     // TODO: security 구현 완료 후 파라미터 변경
