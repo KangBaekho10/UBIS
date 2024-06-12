@@ -14,7 +14,10 @@ class Member(
     var phoneNumber: String,
 
     @Enumerated(EnumType.STRING)
-    var role: Role = Role.CUSTOMER
+    var role: Role = Role.CUSTOMER,
+
+    @Column(name = "pw_history")
+    val pwHistory: String
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
