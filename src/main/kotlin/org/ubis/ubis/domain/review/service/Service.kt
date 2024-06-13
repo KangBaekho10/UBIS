@@ -18,10 +18,10 @@ fun Review.toResponse()
 }
 
 fun toEntity(
-    product: Product, request: ReviewRequest): Review {
+    product: Product, request: ReviewRequest,memberId:Long): Review {
     return Review(
         content = request.content,
         product = product,
-        memberId = 1000000
+        memberId = memberId
     )
 }

@@ -46,7 +46,7 @@ class ProductService(
                 description = request.description,
                 price = request.price,
                 imgs = request.imgs,
-                memberId = memberService.getMember().id
+                memberId = memberService.getMemberIdFromToken()!!
             )
         ).toProductResponse()
     }
