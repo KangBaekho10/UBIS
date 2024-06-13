@@ -1,6 +1,8 @@
 package org.ubis.ubis.domain.member.service
 
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -14,6 +16,7 @@ import org.ubis.ubis.domain.member.model.Role
 
 import org.ubis.ubis.domain.member.model.toResponse
 import org.ubis.ubis.domain.member.repository.MemberRepository
+import org.ubis.ubis.security.UserPrincipal
 import org.ubis.ubis.security.jwt.JwtPlugin
 
 @Service
@@ -21,7 +24,6 @@ class MemberService(
     private val memberRepository: MemberRepository,
     private val passwordEncoder: PasswordEncoder,
     private val jwtPlugin: JwtPlugin
-
 ) {
     fun getMember(memberId: Long): MemberResponse {
         val member = memberRepository.findByIdOrNull(memberId) ?: throw ModelNotFoundException("Member", memberId)
@@ -115,7 +117,7 @@ class MemberService(
             )
         )
     }
-        
+
     @Transactional
     fun createMember(createMemberRequest: CreateMemberRequest): MemberResponse {
 
@@ -157,5 +159,10 @@ class MemberService(
     fun deleteMember(memberId: Long) {
         val member = memberRepository.findByIdOrNull(memberId) ?: throw ModelNotFoundException("Member", memberId)
         memberRepository.delete(member)
+    }
+
+    fun getMemberIdFromToken(): Long? {
+        val principal = SecurityContextHolder.getContext().authentication.principal as UserPrincipal
+        return principal.id
     }
 }
