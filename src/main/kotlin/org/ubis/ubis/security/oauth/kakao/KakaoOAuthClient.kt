@@ -17,6 +17,7 @@ class KakaoOAuthClient(
     @Value("\${oauth2.kakao.redirect_url}") val redirectUrl: String,
     @Value("\${oauth2.kakao.auth_server_base_url}") val authServerBaseUrl: String,
     @Value("\${oauth2.kakao.resource_server_base_url}") val resourceServerBaseUrl: String,
+    @Value("\${oauth2.kakao.client_secret}") val clientSecret: String,
     private val restClient: RestClient
 ) : OAuthClient {
     override fun getLoginPageUrl(): String {
@@ -33,6 +34,7 @@ class KakaoOAuthClient(
             "grant_type" to "authorization_code",
             "client_id" to clientId,
             "redirect_uri" to redirectUrl,
+            "client_secret" to clientSecret,
             "code" to code
         )
 
