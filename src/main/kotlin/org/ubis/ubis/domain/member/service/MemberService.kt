@@ -2,18 +2,15 @@ package org.ubis.ubis.domain.member.service
 
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.core.context.SecurityContextHolder
-import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.ubis.ubis.domain.exception.AlreadyExistsException
 import org.ubis.ubis.domain.exception.ModelNotFoundException
 import org.ubis.ubis.domain.exception.ReusedPasswordException
-
 import org.ubis.ubis.domain.member.dto.*
 import org.ubis.ubis.domain.member.model.Member
 import org.ubis.ubis.domain.member.model.Role
-
 import org.ubis.ubis.domain.member.model.toResponse
 import org.ubis.ubis.domain.member.repository.MemberRepository
 import org.ubis.ubis.security.UserPrincipal
@@ -27,7 +24,6 @@ class MemberService(
 ) {
     fun getMember(memberId: Long): MemberResponse {
         val member = memberRepository.findByIdOrNull(memberId) ?: throw ModelNotFoundException("Member", memberId)
-
         return member.toResponse()
     }
 
@@ -164,5 +160,9 @@ class MemberService(
     fun getMemberIdFromToken(): Long? {
         val principal = SecurityContextHolder.getContext().authentication.principal as UserPrincipal
         return principal.id
+    }
+
+    fun matchMemberId(memberId: Long): Boolean { // Token의 ID와 파라미터ID를 비교
+        return getMemberIdFromToken() == memberId
     }
 }
