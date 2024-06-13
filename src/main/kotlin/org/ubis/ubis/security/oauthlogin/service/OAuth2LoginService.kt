@@ -2,7 +2,6 @@ package org.ubis.ubis.security.oauthlogin.service
 
 
 import org.ubis.ubis.security.oauth.OAuth2ClientService
-import org.ubis.ubis.common.config.JwtHelper
 import org.ubis.ubis.common.config.type.OAuth2Provider
 import org.springframework.stereotype.Service
 import org.ubis.ubis.security.jwt.JwtPlugin
