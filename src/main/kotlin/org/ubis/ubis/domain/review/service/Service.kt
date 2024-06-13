@@ -1,5 +1,6 @@
 package org.ubis.ubis.domain.review.service
 
+import org.ubis.ubis.domain.member.model.Role
 import org.ubis.ubis.domain.product.model.Product
 import org.ubis.ubis.domain.review.dto.ReviewRequest
 import org.ubis.ubis.domain.review.dto.ReviewResponse
@@ -20,6 +21,7 @@ fun toEntity(
     product: Product, request: ReviewRequest): Review {
     return Review(
         content = request.content,
-        product = product
+        product = product,
+        memberId = 1000000
     )
 }
