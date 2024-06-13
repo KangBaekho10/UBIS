@@ -115,6 +115,7 @@ class MemberService(
                 email = member.email,
             )
         )
+    }
         
     @Transactional
     fun createMember(createMemberRequest: CreateMemberRequest): MemberResponse {

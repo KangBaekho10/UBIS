@@ -56,7 +56,8 @@ class MemberController(
         return ResponseEntity
             .status(HttpStatus.OK)
             .body(memberService.login(request))
-            
+    }
+
     // TODO: security 구현 완료 후 파라미터 변경
     @DeleteMapping
     fun deleteMember(@RequestParam memberId: Long): ResponseEntity<Unit> {
