@@ -2,6 +2,7 @@ package org.ubis.ubis.domain.review.controller
 
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import org.ubis.ubis.domain.review.dto.*
 import org.ubis.ubis.domain.review.service.ReviewService
@@ -13,6 +14,7 @@ class ReviewController(
 ) {
 
     @PostMapping
+    //@PreAuthorize("hasRole('CUSTOMER')")
     fun createReview(
         @PathVariable productId: Long,
         @RequestBody request: ReviewRequest,
@@ -32,6 +34,7 @@ class ReviewController(
     }
 
     @PutMapping("/{reviewId}")
+    //@PreAuthorize("hasRole('CUSTOMER')")
     fun updateReview(
         @PathVariable productId: Long,
         @PathVariable reviewId: Long,
@@ -39,16 +42,17 @@ class ReviewController(
     ):ResponseEntity<Unit>{
         return ResponseEntity
             .status(HttpStatus.OK)
-            .body(reviewService.updateReview(reviewId, request))
+            .body(reviewService.updateReview(productId,reviewId, request))
     }
 
     @DeleteMapping("/{reviewId}")
+    //@PreAuthorize("hasRole('CUSTOMER')")
     fun deleteReview(
         @PathVariable productId: Long,
         @PathVariable reviewId: Long,
     ):ResponseEntity<Unit>{
         return ResponseEntity
             .status(HttpStatus.NO_CONTENT)
-            .body(reviewService.deleteReview(reviewId))
+            .body(reviewService.deleteReview(productId,reviewId))
     }
 }

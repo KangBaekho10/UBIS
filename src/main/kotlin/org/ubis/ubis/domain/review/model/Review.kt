@@ -14,8 +14,8 @@ class Review(
     @Column(name = "created_at")
     var createdAt: LocalDateTime = LocalDateTime.now(),
 
-//    @Column(name = "member_id")
-//    val memberId: Long,
+    @Column(name = "member_id")
+    val memberId: Long,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")

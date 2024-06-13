@@ -13,35 +13,30 @@ class MemberController(
     private val memberService: MemberService
 ) {
 
-    @PostMapping
-    fun createMember(@Valid @RequestBody createMemberRequest: CreateMemberRequest): ResponseEntity<String> {
-        memberService.createMember(createMemberRequest)
-        return ResponseEntity.status(HttpStatus.CREATED).body("회원가입이 완료되었습니다.")
-    }
+//    @PostMapping
+//    fun createMember(@Valid @RequestBody createMemberRequest: CreateMemberRequest): ResponseEntity<String> {
+//        memberService.createMember(createMemberRequest)
+//        return ResponseEntity.status(HttpStatus.CREATED).body("회원가입이 완료되었습니다.")
+//    }
 
-    // TODO: security 구현 완료 후 파라미터 변경
     @GetMapping
-    fun getMember(@RequestParam memberId: Long): ResponseEntity<MemberResponse> {
-        return ResponseEntity.status(HttpStatus.OK).body(memberService.getMember(memberId))
+    fun getMember(): ResponseEntity<MemberResponse> {
+        return ResponseEntity.status(HttpStatus.OK).body(memberService.getMember())
     }
 
-    // TODO: security 구현 완료 후 파라미터 변경
     @PostMapping("/password-check")
     fun passwordCheck(
-        @RequestParam memberId: Long,
         @RequestBody password: String
     ): ResponseEntity<Unit> {
-        memberService.passwordCheck(memberId, password)
+        memberService.passwordCheck(password)
         return ResponseEntity.status(HttpStatus.OK).build()
     }
 
-    // TODO: security 구현 완료 후 파라미터 변경
     @PutMapping
     fun updateMember(
-        @RequestParam memberId: Long,
         @Valid @RequestBody updateMemberRequest: UpdateMemberRequest
     ): ResponseEntity<MemberResponse> {
-        return ResponseEntity.status(HttpStatus.OK).body(memberService.updateMember(memberId, updateMemberRequest))
+        return ResponseEntity.status(HttpStatus.OK).body(memberService.updateMember(updateMemberRequest))
     }
 
     @PostMapping("/signup")
@@ -58,10 +53,9 @@ class MemberController(
             .body(memberService.login(request))
     }
 
-    // TODO: security 구현 완료 후 파라미터 변경
     @DeleteMapping
-    fun deleteMember(@RequestParam memberId: Long): ResponseEntity<Unit> {
-        memberService.deleteMember(memberId)
+    fun deleteMember(): ResponseEntity<Unit> {
+        memberService.deleteMember()
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
     }
 }

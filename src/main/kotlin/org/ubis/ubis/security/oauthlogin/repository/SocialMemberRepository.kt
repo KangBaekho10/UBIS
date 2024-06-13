@@ -7,5 +7,4 @@ import org.ubis.ubis.security.oauthlogin.model.SocialMember
 interface SocialMemberRepository : JpaRepository<SocialMember, Long> {
 
     fun findByProviderAndProviderId(provider: OAuth2Provider, providerId: String): SocialMember?
-    //fun findByProviderAndProviderId(kakao: OAuth2Provider, id: String): SocialMember?
 }

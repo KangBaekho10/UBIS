@@ -1,19 +1,19 @@
 package org.ubis.ubis.domain.member.service
 
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.ubis.ubis.domain.exception.AlreadyExistsException
 import org.ubis.ubis.domain.exception.ModelNotFoundException
 import org.ubis.ubis.domain.exception.ReusedPasswordException
-
 import org.ubis.ubis.domain.member.dto.*
 import org.ubis.ubis.domain.member.model.Member
 import org.ubis.ubis.domain.member.model.Role
-
 import org.ubis.ubis.domain.member.model.toResponse
 import org.ubis.ubis.domain.member.repository.MemberRepository
+import org.ubis.ubis.security.UserPrincipal
 import org.ubis.ubis.security.jwt.JwtPlugin
 
 @Service
@@ -21,19 +21,18 @@ class MemberService(
     private val memberRepository: MemberRepository,
     private val passwordEncoder: PasswordEncoder,
     private val jwtPlugin: JwtPlugin
-
 ) {
-    fun getMember(memberId: Long): MemberResponse {
+    fun getMember(): MemberResponse {
+        val memberId = getMemberIdFromToken()
         val member = memberRepository.findByIdOrNull(memberId) ?: throw ModelNotFoundException("Member", memberId)
-
         return member.toResponse()
     }
 
     @Transactional
     fun updateMember(
-        memberId: Long,
         updateMemberRequest: UpdateMemberRequest
     ): MemberResponse {
+        val memberId = getMemberIdFromToken()
         val member = memberRepository.findByIdOrNull(memberId) ?: throw ModelNotFoundException("Member", memberId)
 
         if (updateMemberRequest.name != null) {
@@ -56,8 +55,6 @@ class MemberService(
 
             // 수정 요청한 비밀번호가 이전에 사용했던 적이 있는지 확인
             val isExistPassword = pwHistory.filter { passwordEncoder.matches(updateMemberRequest.password, it) }.size
-
-            println("isExistPassword: $isExistPassword")
 
             if (isExistPassword > 0) {
                 throw ReusedPasswordException("이전에 사용했던 비밀번호는 사용할 수 없습니다.")
@@ -111,12 +108,11 @@ class MemberService(
 
         return LoginResponse(
             accessToken = jwtPlugin.generateAccessToken(
-                subject = member.id.toString(),
-                email = member.email,
+                subject = member.id.toString()
             )
         )
     }
-        
+
     @Transactional
     fun createMember(createMemberRequest: CreateMemberRequest): MemberResponse {
 
@@ -146,7 +142,8 @@ class MemberService(
 
     }
 
-    fun passwordCheck(memberId: Long, password: String) {
+    fun passwordCheck(password: String) {
+        val memberId = getMemberIdFromToken()
         val member = memberRepository.findByIdOrNull(memberId) ?: throw ModelNotFoundException("Member", memberId)
 
         if (!passwordEncoder.matches(password, member.password)) {
@@ -155,8 +152,19 @@ class MemberService(
     }
 
     @Transactional
-    fun deleteMember(memberId: Long) {
+    fun deleteMember() {
+        val memberId = getMemberIdFromToken()
         val member = memberRepository.findByIdOrNull(memberId) ?: throw ModelNotFoundException("Member", memberId)
+
         memberRepository.delete(member)
+    }
+
+    fun getMemberIdFromToken(): Long? {
+        val principal = SecurityContextHolder.getContext().authentication.principal as UserPrincipal
+        return principal.id
+    }
+
+    fun matchMemberId(memberId: Long): Boolean { // Token의 ID와 파라미터ID를 비교
+        return getMemberIdFromToken() == memberId
     }
 }

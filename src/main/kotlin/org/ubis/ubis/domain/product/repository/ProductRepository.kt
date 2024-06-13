@@ -4,4 +4,6 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.ubis.ubis.domain.product.model.Product
 
 interface ProductRepository
-    : JpaRepository<Product, Long>, ProductRepositoryCustom
+    : JpaRepository<Product, Long>, ProductRepositoryCustom{
+        fun findByMemberId(memberId: Long): List<Product>
+    }

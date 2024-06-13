@@ -15,13 +15,13 @@ class OAuth2LoginController(
     private val oAuth2ClientService: OAuth2ClientService
 ) {
 
-    @GetMapping("/oauth2/login/{provider}")
+    @GetMapping("/oauth/{provider}/")
     fun redirectLoginPage(@PathVariable provider: OAuth2Provider, response: HttpServletResponse) {
         oAuth2ClientService.generateLoginPageUrl(provider)
             .let { response.sendRedirect(it) }
     }
 
-    @GetMapping("/oauth2/callback/{provider}")
+    @GetMapping("/{provider}/callback/")
     fun callback(
         @PathVariable provider: OAuth2Provider,
         @RequestParam(name = "code") authorizationCode: String

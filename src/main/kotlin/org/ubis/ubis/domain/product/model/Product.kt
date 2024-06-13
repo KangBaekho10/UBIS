@@ -21,6 +21,9 @@ class Product(
     @Column(name = "created_at")
     var createdAt: LocalDateTime = LocalDateTime.now(),
 
+    @Column(name = "member_id")
+    val memberId: Long,
+
     @Column(name = "imgs")
     var imgs: String,
 

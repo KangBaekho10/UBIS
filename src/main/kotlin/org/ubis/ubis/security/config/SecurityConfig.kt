@@ -2,6 +2,7 @@ package org.ubis.ubis.security.config
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpMethod
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
@@ -24,12 +25,14 @@ class SecurityConfig(
             .csrf { it.disable() }
             .authorizeHttpRequests {
                 it.requestMatchers(
-                    "/members/**",
-                    "/products/**",
                     "/swagger-ui/**",
                     "/v3/api-docs/**",
-                    "/oauth2/**",
-                ).permitAll()
+                    "/oauth2/**"
+                    ).permitAll()
+                    // 회원가입, 로그인에 대해 인증없이 접근 허용
+                    .requestMatchers(HttpMethod.POST, "/members/signup", "/members/login").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/**") // 모든 GET 요청 허용
+                    .permitAll()
                     .anyRequest().authenticated()
             }.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
             .build()
