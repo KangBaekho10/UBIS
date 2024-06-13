@@ -11,7 +11,7 @@ import org.ubis.ubis.domain.order.dto.OrderResponse
 import org.ubis.ubis.domain.order.service.OrderService
 
 @RestController
-@RequestMapping("/product/{productId}/orders")
+@RequestMapping("/products/{productId}/orders")
 class OrderController(
     private val orderService: OrderService,
 ) {

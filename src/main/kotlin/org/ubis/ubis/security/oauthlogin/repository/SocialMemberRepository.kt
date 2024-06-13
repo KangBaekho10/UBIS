@@ -1,12 +1,11 @@
 package org.ubis.ubis.security.oauthlogin.repository
 
-import org.ubis.ubis.security.oauthlogin.model.SocialMember
-import org.springframework.data.repository.CrudRepository
-import org.springframework.stereotype.Repository
+import org.springframework.data.jpa.repository.JpaRepository
 import org.ubis.ubis.common.config.type.OAuth2Provider
+import org.ubis.ubis.security.oauthlogin.model.SocialMember
 
-@Repository
-interface SocialMemberRepository : CrudRepository<SocialMember, Long> {
+interface SocialMemberRepository : JpaRepository<SocialMember, Long> {
 
-    fun findByProviderAndProviderId(kakao: OAuth2Provider, id: String): SocialMember?
+    fun findByProviderAndProviderId(provider: OAuth2Provider, providerId: String): SocialMember?
+    //fun findByProviderAndProviderId(kakao: OAuth2Provider, id: String): SocialMember?
 }
