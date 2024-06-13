@@ -5,7 +5,6 @@ import org.springframework.web.reactive.function.client.WebClient
 import org.ubis.ubis.security.jwt.JwtPlugin
 import org.ubis.ubis.security.oauth.kakao.KakaoOAuthClient
 import org.ubis.ubis.security.oauth.naver.NaverOAuthClient
-import org.ubis.ubis.security.oauth.naver.NaverOAuthUserInfo
 import org.ubis.ubis.security.oauthlogin.model.SocialMember
 import org.ubis.ubis.security.oauthlogin.repository.SocialRepository
 
@@ -26,13 +25,21 @@ class OAuthService(
 
     fun naverLogin(code: String): String {
         val accessToken = naverOAuthClient.getAccessToken(code)
-        val userInfo = naverOAuthClient.getUserInfo(accessToken) as NaverOAuthUserInfo
 
+        val userInfo = WebClient.create("https://openapi.naver.com/v1/nid/me")
+            .get()
+            .header("Authorization", "Bearer $accessToken")
+            .retrieve() // 응답값을 받게 해주는 메서드
+            .bodyToMono(Map::class.java) // ResponseBody Type
+            .block() // 동기 방식으로 변경
 
-        val socialMembers = (socialRepository.findByName(userInfo.response.name!!)
+        val naverAccount = userInfo?.get("response") as Map<*, *>
+        val nickname = naverAccount["name"] as String
+
+        val socialMembers = (socialRepository.findByName(nickname)
             ?: socialRepository.save(
                 SocialMember(
-                    name = userInfo.response.name,
+                    name = nickname,
                     oAuthProvider = "naver",
                 )
             ))
