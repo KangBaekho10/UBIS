@@ -1,9 +1,11 @@
 package org.ubis.ubis.security.oauthlogin.service
 
-import org.springframework.stereotype.Service
+
+import org.ubis.ubis.security.oauth.OAuth2ClientService
 import org.ubis.ubis.common.config.JwtHelper
 import org.ubis.ubis.common.config.type.OAuth2Provider
-import org.ubis.ubis.security.oauth.OAuth2ClientService
+import org.springframework.stereotype.Service
+
 
 @Service
 class OAuth2LoginService(
@@ -13,7 +15,7 @@ class OAuth2LoginService(
 ) {
 
     fun login(provider: OAuth2Provider, authorizationCode: String): String {
-            return oAuth2ClientService.login(provider, authorizationCode)
+        return oAuth2ClientService.login(provider, authorizationCode)
             .let { socialMemberService.registerIfAbsent(it) }
             .let { jwtHelper.generateAccessToken(it.id!!) }
     }
