@@ -56,7 +56,7 @@ class ProductService(
         val result = productRepository.findByIdOrNull(productId)
             ?: throw RuntimeException("Product with ID $productId not found")
         if(!memberService.matchMemberId(result.memberId))
-            throw RuntimeException("남의 것을 수정하려 하다니 못남놈!")
+            throw RuntimeException("남의 것을 수정하려 하다니 못난놈!")
         result.name = request.name
         result.description = request.description
         result.price = request.price
@@ -68,6 +68,8 @@ class ProductService(
     fun deleteProduct(productId: Long) {
         val result = productRepository.findByIdOrNull(productId)
             ?: throw RuntimeException("Product with ID $productId not found")
+        if(!memberService.matchMemberId(result.memberId))
+            throw RuntimeException("남의 것을 삭제하려 하다니 못난놈!")
         return productRepository.delete(result)
     }
 }

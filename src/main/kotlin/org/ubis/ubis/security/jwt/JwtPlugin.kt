@@ -26,10 +26,10 @@ class JwtPlugin (
     }
 
     fun generateAccessToken(subject: String): String {
-        return generateToken(subject,  Duration.ofHours(accessTokenExpirationHour))
+        return generateToken(subject, Duration.ofHours(accessTokenExpirationHour))
     }
 
-    private fun generateToken(subject: String,  expirationPeriod: Duration): String {
+    private fun generateToken(subject: String,expirationPeriod: Duration): String {
         val claims: Claims = Jwts.claims().build()
 
         val key = Keys.hmacShaKeyFor(secret.toByteArray(StandardCharsets.UTF_8))

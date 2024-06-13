@@ -41,21 +41,25 @@ class ProductController(
     }
 
     @PostMapping
-    //@PreAuthorize("hasRole('BUSINESS')")
+    // @PreAuthorize("hasRole('BUSINESS')")
     fun createProduct(
         @RequestBody request: CreateProductRequest
     ): ResponseEntity<ProductResponse> {
         return ResponseEntity.ok(productService.createProduct(request))
     }
 
+
     @PutMapping("/{productId}")
+    // @PreAuthorize("hasRole('BUSINESS')")
     fun updateProduct(
         @PathVariable productId: Long, @RequestBody request: UpdateProductRequest
     ): ResponseEntity<ProductResponse> {
         return ResponseEntity.ok(productService.updateProduct(productId, request))
     }
 
+
     @DeleteMapping("/{productId}")
+    // @PreAuthorize("hasRole('BUSINESS')")
     fun deleteProduct(
         @PathVariable productId: Long
     ): ResponseEntity<Unit> {
