@@ -8,5 +8,4 @@ interface ProductRepositoryCustom {
    fun findProductList(pageable: Pageable, name: String?): Page<Product>
 
 
-   //잘하자 좀
 }

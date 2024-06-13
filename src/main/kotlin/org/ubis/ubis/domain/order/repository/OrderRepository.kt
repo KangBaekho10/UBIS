@@ -5,4 +5,7 @@ import org.ubis.ubis.domain.order.model.Order
 
 interface OrderRepository: JpaRepository<Order, Long> {
     fun findByProductIdAndId(productId: Long, orderId: Long): Order?
+    fun existsByProductIdAndMemberId(productId: Long, memberId:Long): Boolean
+    fun findAllByMemberId(memberId: Long): List<Order>
+    fun findAllByProductId(productId: Long): List<Order>
 }

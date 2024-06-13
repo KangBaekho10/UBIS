@@ -29,6 +29,7 @@ fun Member.toResponse(): MemberResponse {
         id = id!!,
         email = email,
         name = name,
-        phoneNumber = phoneNumber
+        phoneNumber = phoneNumber,
+        role = role
     )
 }

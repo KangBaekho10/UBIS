@@ -32,6 +32,7 @@ class JwtPlugin(
     private fun generateToken(subject: String, name: String, expirationPeriod: Duration): String {
         val claims: Claims = Jwts.claims().add(mapOf("name" to name)).build()
 
+
         val key = Keys.hmacShaKeyFor(secret.toByteArray(StandardCharsets.UTF_8))
         val now = Instant.now()
 

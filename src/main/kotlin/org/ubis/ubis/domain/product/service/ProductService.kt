@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import org.ubis.ubis.domain.member.service.MemberService
 import org.ubis.ubis.domain.product.dto.CreateProductRequest
 import org.ubis.ubis.domain.product.dto.ProductResponse
 import org.ubis.ubis.domain.product.dto.UpdateProductRequest
@@ -15,6 +16,7 @@ import org.ubis.ubis.domain.product.repository.ProductRepository
 @Service
 class ProductService(
     private val productRepository: ProductRepository,
+    private val memberService: MemberService
 ) {
 
     fun searchProductList(pageable: Pageable,name:String?):Page<ProductResponse> {
@@ -43,7 +45,8 @@ class ProductService(
                 name = request.name,
                 description = request.description,
                 price = request.price,
-                imgs = request.imgs
+                imgs = request.imgs,
+                memberId = memberService.getMemberIdFromToken()!!
             )
         ).toProductResponse()
     }
@@ -52,7 +55,8 @@ class ProductService(
     fun updateProduct(productId: Long, request: UpdateProductRequest): ProductResponse {
         val result = productRepository.findByIdOrNull(productId)
             ?: throw RuntimeException("Product with ID $productId not found")
-
+        if(!memberService.matchMemberId(result.memberId))
+            throw RuntimeException("남의 것을 수정하려 하다니 못난놈!")
         result.name = request.name
         result.description = request.description
         result.price = request.price
@@ -64,6 +68,8 @@ class ProductService(
     fun deleteProduct(productId: Long) {
         val result = productRepository.findByIdOrNull(productId)
             ?: throw RuntimeException("Product with ID $productId not found")
+        if(!memberService.matchMemberId(result.memberId))
+            throw RuntimeException("남의 것을 삭제하려 하다니 못난놈!")
         return productRepository.delete(result)
     }
 }

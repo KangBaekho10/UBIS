@@ -115,6 +115,7 @@ class MemberService(
             accessToken = jwtPlugin.generateAccessToken(
                 subject = member.id.toString(),
                 name = member.name
+
             )
         )
     }
