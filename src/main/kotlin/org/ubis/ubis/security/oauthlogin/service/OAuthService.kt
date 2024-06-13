@@ -27,7 +27,7 @@ class OAuthService(
     fun naverLogin(code: String): String {
         val accessToken = naverOAuthClient.getAccessToken(code)
         val userInfo = naverOAuthClient.getUserInfo(accessToken) as NaverOAuthUserInfo
-        val socialMember = (socialRepository.findByName(userInfo.response.name)
+        val socialMembers = (socialRepository.findByName(userInfo.response.name)
             ?: socialRepository.save(
                 SocialMember(
                     name = userInfo.response.name,
@@ -35,7 +35,7 @@ class OAuthService(
                 )
             ))
 
-        return jwtPlugin.generateAccessToken("name", socialMember.name)
+        return jwtPlugin.generateAccessToken("name", socialMembers.name)
     }
 
     fun kakaoLogin(code: String): String {

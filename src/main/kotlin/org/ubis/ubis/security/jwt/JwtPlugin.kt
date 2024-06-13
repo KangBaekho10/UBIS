@@ -12,7 +12,7 @@ import java.time.Instant
 import java.util.*
 
 @Component
-class JwtPlugin (
+class JwtPlugin(
     @Value("\${auth.jwt.issuer}") private val issuer: String,
     @Value("\${auth.jwt.secret}") private val secret: String,
     @Value("\${auth.jwt.accessTokenExpirationHour}") private val accessTokenExpirationHour: Long,

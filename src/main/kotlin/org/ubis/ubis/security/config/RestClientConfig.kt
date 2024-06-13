@@ -1,4 +1,4 @@
-package org.ubis.ubis.common.config
+package org.ubis.ubis.security.config
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration

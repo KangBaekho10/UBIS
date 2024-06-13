@@ -1,9 +1,9 @@
 package org.ubis.ubis.security.oauthlogin.controller
 
-import org.ubis.ubis.security.oauthlogin.service.OAuthService
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import org.ubis.ubis.security.oauthlogin.service.OAuthService
 
 @RestController
 class OAuthController(
@@ -11,26 +11,26 @@ class OAuthController(
 ) {
 
     @GetMapping("/oauth/kakao")
-    fun getLoginPage() : String{
+    fun getKakaoLoginPage(): String {
         return oAuthService.getKakaoLoginPage()
     }
 
     @GetMapping("/kakao/callback")
-    fun callback(
-        @RequestParam code :String
-    ) : String{
+    fun kakaoCallback(
+        @RequestParam code: String
+    ): String {
         return oAuthService.kakaoLogin(code)
     }
 
     @GetMapping("/oauth/naver")
-    fun getNaverLoginPage() : String{
+    fun getNaverLoginPage(): String {
         return oAuthService.getNaverLoginPage()
     }
 
     @GetMapping("/naver/callback")
     fun naverCallback(
-        @RequestParam code :String
-    ) : String{
+        @RequestParam code: String
+    ): String {
         return oAuthService.naverLogin(code)
     }
 }
