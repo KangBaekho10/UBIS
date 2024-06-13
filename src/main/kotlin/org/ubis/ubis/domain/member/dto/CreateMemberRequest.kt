@@ -14,5 +14,6 @@ data class CreateMemberRequest(
         message = "최소 8자 이상, 15자 이하이며 알파벳 대소문자(a~z, A~Z), 숫자(0~9), 특수문자를 포함해야 합니다."
     )
     val password: String,
-    val phoneNumber: String
+    val phoneNumber: String,
+    val role: String
 )

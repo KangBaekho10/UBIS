@@ -7,17 +7,21 @@ import org.springframework.transaction.annotation.Transactional
 import org.ubis.ubis.domain.exception.AlreadyExistsException
 import org.ubis.ubis.domain.exception.ModelNotFoundException
 import org.ubis.ubis.domain.exception.ReusedPasswordException
-import org.ubis.ubis.domain.member.dto.CreateMemberRequest
-import org.ubis.ubis.domain.member.dto.MemberResponse
-import org.ubis.ubis.domain.member.dto.UpdateMemberRequest
+
+import org.ubis.ubis.domain.member.dto.*
 import org.ubis.ubis.domain.member.model.Member
+import org.ubis.ubis.domain.member.model.Role
+
 import org.ubis.ubis.domain.member.model.toResponse
 import org.ubis.ubis.domain.member.repository.MemberRepository
+import org.ubis.ubis.security.jwt.JwtPlugin
 
 @Service
 class MemberService(
     private val memberRepository: MemberRepository,
-    private val passwordEncoder: PasswordEncoder
+    private val passwordEncoder: PasswordEncoder,
+    private val jwtPlugin: JwtPlugin
+
 ) {
     fun getMember(memberId: Long): MemberResponse {
         val member = memberRepository.findByIdOrNull(memberId) ?: throw ModelNotFoundException("Member", memberId)
@@ -75,6 +79,43 @@ class MemberService(
         return member.toResponse()
     }
 
+    fun signup(request: CreateMemberRequest): MemberResponse {
+        if (memberRepository.existsByEmail(request.email)) {
+            throw IllegalStateException("Email is already in use")
+        }
+
+        return memberRepository.save(
+            Member(
+                email = request.email,
+                password = passwordEncoder.encode(request.password),
+                name = request.name,
+                phoneNumber = request.phoneNumber,
+                pwHistory = null.toString(),
+                role = when (request.role) {
+                    "BUSINESS" -> Role.BUSINESS
+                    "CUSTOMER" -> Role.CUSTOMER
+                    else -> throw IllegalArgumentException("Invalid role")
+                }
+
+            )
+        ).toResponse()
+    }
+
+    fun login(request: MemberRequest): LoginResponse {
+        val member = memberRepository.findByEmail(request.email) ?: throw ModelNotFoundException("Member", null)
+
+
+        if (!passwordEncoder.matches(request.password, member.password)) {
+            throw IllegalStateException("Passwords do not match")
+        }
+
+        return LoginResponse(
+            accessToken = jwtPlugin.generateAccessToken(
+                subject = member.id.toString(),
+                email = member.email,
+            )
+        )
+        
     @Transactional
     fun createMember(createMemberRequest: CreateMemberRequest): MemberResponse {
 

@@ -4,9 +4,7 @@ import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import org.ubis.ubis.domain.member.dto.CreateMemberRequest
-import org.ubis.ubis.domain.member.dto.MemberResponse
-import org.ubis.ubis.domain.member.dto.UpdateMemberRequest
+import org.ubis.ubis.domain.member.dto.*
 import org.ubis.ubis.domain.member.service.MemberService
 
 @RestController
@@ -46,6 +44,19 @@ class MemberController(
         return ResponseEntity.status(HttpStatus.OK).body(memberService.updateMember(memberId, updateMemberRequest))
     }
 
+    @PostMapping("/signup")
+    fun signup(@RequestBody request: CreateMemberRequest): ResponseEntity<MemberResponse> {
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body(memberService.signup(request))
+    }
+
+    @PostMapping("/login")
+    fun login(@RequestBody request: MemberRequest): ResponseEntity<LoginResponse> {
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body(memberService.login(request))
+            
     // TODO: security 구현 완료 후 파라미터 변경
     @DeleteMapping
     fun deleteMember(@RequestParam memberId: Long): ResponseEntity<Unit> {

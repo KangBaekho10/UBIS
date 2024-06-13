@@ -1,6 +1,7 @@
 package org.ubis.ubis.security.oauthlogin.service
 
 import org.ubis.ubis.security.oauth.OAuth2LoginUserInfo
+
 import org.ubis.ubis.domain.member.model.SocialMember
 import org.ubis.ubis.domain.member.repository.SocialMemberRepository
 import org.springframework.stereotype.Service
