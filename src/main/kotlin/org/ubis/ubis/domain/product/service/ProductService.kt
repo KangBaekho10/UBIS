@@ -46,7 +46,7 @@ class ProductService(
                 description = request.description,
                 price = request.price,
                 imgs = request.imgs,
-                memberId = memberService.getMember().id
+                memberId = memberService.getMemberIdFromToken()!!
             )
         ).toProductResponse()
     }
@@ -68,6 +68,8 @@ class ProductService(
     fun deleteProduct(productId: Long) {
         val result = productRepository.findByIdOrNull(productId)
             ?: throw RuntimeException("Product with ID $productId not found")
+        if(!memberService.matchMemberId(result.memberId))
+            throw RuntimeException("남의 것을 삭제하려 하다니 못난놈!")
         return productRepository.delete(result)
     }
 }

@@ -23,6 +23,9 @@ class Order(
     @Column(name = "product_price")
     var productPrice: Float,
 
+    @Column(name = "member_id")
+    var memberId: Long,
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     var product: Product
@@ -38,5 +41,7 @@ class Order(
 fun Order.toOrderResponse(): OrderResponse = OrderResponse(
     id = id!!,
     createdAt = createdAt,
-    productPrice = productPrice
+    productPrice = productPrice,
+    productName = product.name,
+    memberName = memberId.toString(),
 )
