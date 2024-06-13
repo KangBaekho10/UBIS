@@ -12,7 +12,7 @@ import java.time.Instant
 import java.util.*
 
 @Component
-class JwtPlugin (
+class JwtPlugin(
     @Value("\${auth.jwt.issuer}") private val issuer: String,
     @Value("\${auth.jwt.secret}") private val secret: String,
     @Value("\${auth.jwt.accessTokenExpirationHour}") private val accessTokenExpirationHour: Long,
@@ -25,12 +25,13 @@ class JwtPlugin (
         }
     }
 
-    fun generateAccessToken(subject: String): String {
-        return generateToken(subject, Duration.ofHours(accessTokenExpirationHour))
+    fun generateAccessToken(subject: String, name: String): String {
+        return generateToken(subject, name, Duration.ofHours(accessTokenExpirationHour))
     }
 
-    private fun generateToken(subject: String,expirationPeriod: Duration): String {
-        val claims: Claims = Jwts.claims().build()
+    private fun generateToken(subject: String, name: String, expirationPeriod: Duration): String {
+        val claims: Claims = Jwts.claims().add(mapOf("name" to name)).build()
+
 
         val key = Keys.hmacShaKeyFor(secret.toByteArray(StandardCharsets.UTF_8))
         val now = Instant.now()

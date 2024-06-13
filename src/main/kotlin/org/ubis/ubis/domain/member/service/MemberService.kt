@@ -1,5 +1,6 @@
 package org.ubis.ubis.domain.member.service
 
+import jakarta.validation.Valid
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -81,6 +82,10 @@ class MemberService(
             throw IllegalStateException("Email is already in use")
         }
 
+        if (memberRepository.existsByPhoneNumber(request.phoneNumber)) { // 이미 존재하는 전화번호일 경우 예외 발생
+            throw AlreadyExistsException(request.phoneNumber, "전화번호")
+        }
+
         return memberRepository.save(
             Member(
                 email = request.email,
@@ -108,7 +113,9 @@ class MemberService(
 
         return LoginResponse(
             accessToken = jwtPlugin.generateAccessToken(
-                subject = member.id.toString()
+                subject = member.id.toString(),
+                name = member.name
+
             )
         )
     }

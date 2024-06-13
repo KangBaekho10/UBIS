@@ -40,7 +40,7 @@ class MemberController(
     }
 
     @PostMapping("/signup")
-    fun signup(@RequestBody request: CreateMemberRequest): ResponseEntity<MemberResponse> {
+    fun signup(@Valid @RequestBody request: CreateMemberRequest): ResponseEntity<MemberResponse> {
         return ResponseEntity
             .status(HttpStatus.OK)
             .body(memberService.signup(request))

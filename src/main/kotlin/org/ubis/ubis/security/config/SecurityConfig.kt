@@ -27,8 +27,10 @@ class SecurityConfig(
                 it.requestMatchers(
                     "/swagger-ui/**",
                     "/v3/api-docs/**",
-                    "/oauth2/**"
-                    ).permitAll()
+                    "/oauth/**",
+                    "/kakao/**",
+                    "/naver/**"
+                ).permitAll()
                     // 회원가입, 로그인에 대해 인증없이 접근 허용
                     .requestMatchers(HttpMethod.POST, "/members/signup", "/members/login").permitAll()
                     .requestMatchers(HttpMethod.GET, "/**") // 모든 GET 요청 허용
