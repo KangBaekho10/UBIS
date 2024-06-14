@@ -35,16 +35,16 @@ class OAuthService(
             .block() // 동기 방식으로 변경
 
         val naverAccount = userInfo?.get("response") as Map<*, *>
-        val nickname = naverAccount["name"] as String
+        val email = naverAccount["email"].toString()
+        val nickname = naverAccount["nickname"].toString()// as String
 
-        val members = (memberRepository.findByName(nickname)
+        val members = (memberRepository.findByEmail(email)
             ?: memberRepository.save(
                 Member(
                     name = nickname,
                     oAuthProvider = "naver",
-                    email = " ",
+                    email = email,
                     password = " ",
-                    phoneNumber = " ",
                     pwHistory = " ",
                     role = Role.CUSTOMER
                 )
@@ -66,16 +66,17 @@ class OAuthService(
 
         val kakaoAccount = userInfo?.get("kakao_account") as Map<*, *>
         val profile = kakaoAccount["profile"] as Map<*, *>
+        val email = kakaoAccount["email"].toString()
         val nickname = profile["nickname"].toString()
 
-        val members = (memberRepository.findByName(nickname)
+        val members = (memberRepository.findByEmail(email)
             ?: memberRepository.save(
                 Member(
                     name = nickname,
                     oAuthProvider = "kakao",
-                    email = " ",
+                    email = email,
                     password = " ",
-                    phoneNumber = " ",
+//                    phoneNumber = " ",
                     pwHistory = " ",
                     role = Role.CUSTOMER
                 )

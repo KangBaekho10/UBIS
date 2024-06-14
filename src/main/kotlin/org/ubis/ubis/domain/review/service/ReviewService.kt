@@ -42,7 +42,7 @@ class ReviewService(
         return  repository.findByIdOrNull(reviewId)
             ?.let {
                 if(!memberService.matchMemberId(it.memberId))
-                    throw IllegalStateException("MemberInfo do not match")
+                    throw IllegalArgumentException("MemberInfo do not match")
                 it.content=request.content
                 it.toResponse(memberService.getMember().name)
             }?: throw ModelNotFoundException("updateReview",reviewId)
@@ -53,7 +53,7 @@ class ReviewService(
         return  repository.findByIdOrNull(reviewId)
             ?.let {
                 if(!memberService.matchMemberId(it.memberId))
-                    throw IllegalStateException("MemberInfo do not match")
+                    throw IllegalArgumentException("MemberInfo do not match")
                 repository.deleteById(reviewId)
             }?: throw ModelNotFoundException("deleteReview",reviewId)
     }

@@ -33,6 +33,10 @@ class MemberService(
         updateMemberRequest: UpdateMemberRequest
     ): MemberResponse {
         val memberId = getMemberIdFromToken()
+
+        if (getMemberJoinTypeFromToken() == "SOCIAL") {
+            throw IllegalStateException("소셜 회원은 회원정보를 수정할 수 없습니다.")
+        }
         val member = memberRepository.findByIdOrNull(memberId) ?: throw ModelNotFoundException("Member", memberId)
 
         if (updateMemberRequest.name != null) {
@@ -122,6 +126,11 @@ class MemberService(
 
     fun passwordCheck(request: MemberPasswordRequest) {
         val memberId = getMemberIdFromToken()
+
+        if (getMemberJoinTypeFromToken() == "SOCIAL") {
+            throw IllegalStateException("소셜 회원은 비밀번호가 없으므로 확인할 수 없습니다.")
+        }
+
         val member = memberRepository.findByIdOrNull(memberId) ?: throw ModelNotFoundException("Member", memberId)
 
         if (!passwordEncoder.matches(request.password, member.password)) {
@@ -140,6 +149,11 @@ class MemberService(
     fun getMemberIdFromToken(): Long? {
         val principal = SecurityContextHolder.getContext().authentication.principal as UserPrincipal
         return principal.id
+    }
+
+    fun getMemberJoinTypeFromToken(): String {
+        val principal = SecurityContextHolder.getContext().authentication.principal as UserPrincipal
+        return principal.joinType
     }
 
     fun matchMemberId(memberId: Long): Boolean { // Token의 ID와 파라미터ID를 비교

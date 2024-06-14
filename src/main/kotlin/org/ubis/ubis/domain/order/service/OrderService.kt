@@ -46,6 +46,8 @@ class OrderService(
             ?: throw ModelNotFoundException("getOrder",orderId)
         val member = memberRepository.findByIdOrNull(result.memberId)
             ?: throw ModelNotFoundException("getOrder",result.memberId)
+        if(!memberService.matchMemberId(result.memberId))
+            throw IllegalArgumentException("Member Not Match")
         return result.toOrderResponse(member.name)
     }
 

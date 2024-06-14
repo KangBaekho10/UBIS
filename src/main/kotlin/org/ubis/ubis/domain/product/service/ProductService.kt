@@ -53,7 +53,7 @@ class ProductService(
         val result = productRepository.findByIdOrNull(productId)
             ?: throw ModelNotFoundException("updateProduct", productId)
         if(!memberService.matchMemberId(result.memberId))
-            throw IllegalStateException("MemberInfo do not match")
+            throw IllegalArgumentException("MemberInfo do not match")
         result.name = request.name
         result.description = request.description
         result.price = request.price
@@ -66,7 +66,7 @@ class ProductService(
         val result = productRepository.findByIdOrNull(productId)
             ?: throw ModelNotFoundException("deleteProduct", productId)
         if(!memberService.matchMemberId(result.memberId))
-            throw IllegalStateException("MemberInfo do not match")
+            throw IllegalArgumentException("MemberInfo do not match")
         return productRepository.delete(result)
     }
 }
