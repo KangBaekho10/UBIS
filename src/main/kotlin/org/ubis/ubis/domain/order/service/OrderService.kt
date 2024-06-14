@@ -23,21 +23,25 @@ class OrderService(
     private val isCustomer: () ->Boolean = {
         memberService.getMember().role == Role.CUSTOMER }
 
+
     fun getOrderList(): List<OrderResponse> {
         val memberId = memberService.getMemberIdFromToken()!!
         var orders = mutableListOf<OrderResponse>()
-        if (isBusiness()) {
-            productRepository.findByMemberId(memberId)
-                .forEach { product ->
-                    orderRepository.findAllByProductId(product.id!!)
-                        .forEach { order ->
-                            orders.add(order.toOrderResponse())
-                        }
-                }
-        } else if (isCustomer()) {
-            orders = orderRepository.findAllByMemberId(memberId)
-                .map { it.toOrderResponse() }
-                .toMutableList()
+        when(memberService.getMember().role){
+            Role.CUSTOMER -> {
+                orders = orderRepository.findAllByMemberId(memberId)
+                    .map { it.toOrderResponse() }
+                    .toMutableList()
+            }
+            Role.BUSINESS -> {
+                productRepository.findByMemberId(memberId)
+                    .forEach { product ->
+                        orderRepository.findAllByProductId(product.id!!)
+                            .forEach { order ->
+                                orders.add(order.toOrderResponse())
+                            }
+                    }
+            }
         }
         return orders
     }
@@ -61,6 +65,7 @@ class OrderService(
             productPrice = product.price,
             product = product,
             memberId = memberService.getMemberIdFromToken()!!
+
         )
         product.createOrder(order)
         orderRepository.save(order)

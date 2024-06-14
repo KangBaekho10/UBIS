@@ -1,6 +1,5 @@
 package org.ubis.ubis.domain.member.service
 
-import jakarta.validation.Valid
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -89,10 +88,11 @@ class MemberService(
         return memberRepository.save(
             Member(
                 email = request.email,
+                oAuthProvider = "email",
                 password = passwordEncoder.encode(request.password),
                 name = request.name,
                 phoneNumber = request.phoneNumber,
-                pwHistory = null.toString(),
+                pwHistory = passwordEncoder.encode(request.password),
                 role = when (request.role) {
                     "BUSINESS" -> Role.BUSINESS
                     "CUSTOMER" -> Role.CUSTOMER
@@ -114,8 +114,8 @@ class MemberService(
         return LoginResponse(
             accessToken = jwtPlugin.generateAccessToken(
                 subject = member.id.toString(),
-                name = member.name
-
+                role = member.role.toString(),
+                joinType = "STANDARD"
             )
         )
     }
@@ -140,6 +140,7 @@ class MemberService(
         return memberRepository.save(
             Member(
                 name = createMemberRequest.name,
+                oAuthProvider = "email",
                 email = createMemberRequest.email,
                 password = password,
                 phoneNumber = createMemberRequest.phoneNumber,
@@ -149,11 +150,11 @@ class MemberService(
 
     }
 
-    fun passwordCheck(password: String) {
+    fun passwordCheck(request: MemberPasswordRequest) {
         val memberId = getMemberIdFromToken()
         val member = memberRepository.findByIdOrNull(memberId) ?: throw ModelNotFoundException("Member", memberId)
 
-        if (!passwordEncoder.matches(password, member.password)) {
+        if (!passwordEncoder.matches(request.password, member.password)) {
             throw IllegalArgumentException("비밀번호가 일치하지 않습니다.")
         }
     }
@@ -173,5 +174,10 @@ class MemberService(
 
     fun matchMemberId(memberId: Long): Boolean { // Token의 ID와 파라미터ID를 비교
         return getMemberIdFromToken() == memberId
+    }
+
+    fun getJoinTypeFromToken(): String? {
+        val principal = SecurityContextHolder.getContext().authentication.principal as UserPrincipal
+        return principal.joinType
     }
 }

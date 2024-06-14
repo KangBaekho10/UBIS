@@ -30,7 +30,7 @@ class OrderController(
     }
 
     @PostMapping
-    //@PreAuthorize("hasRole('CUSTOMER')")
+    @PreAuthorize("hasRole('CUSTOMER')")
     fun createOrder(
         @PathVariable productId: Long,
     ): ResponseEntity<OrderResponse> {

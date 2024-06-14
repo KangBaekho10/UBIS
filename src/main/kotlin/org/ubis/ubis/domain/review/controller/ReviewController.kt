@@ -14,7 +14,7 @@ class ReviewController(
 ) {
 
     @PostMapping
-    //@PreAuthorize("hasRole('CUSTOMER')")
+    @PreAuthorize("hasRole('CUSTOMER')")
     fun createReview(
         @PathVariable productId: Long,
         @RequestBody request: ReviewRequest,
@@ -34,7 +34,7 @@ class ReviewController(
     }
 
     @PutMapping("/{reviewId}")
-    //@PreAuthorize("hasRole('CUSTOMER')")
+    @PreAuthorize("hasRole('CUSTOMER')")
     fun updateReview(
         @PathVariable productId: Long,
         @PathVariable reviewId: Long,
@@ -46,7 +46,7 @@ class ReviewController(
     }
 
     @DeleteMapping("/{reviewId}")
-    //@PreAuthorize("hasRole('CUSTOMER')")
+    @PreAuthorize("hasRole('CUSTOMER')")
     fun deleteReview(
         @PathVariable productId: Long,
         @PathVariable reviewId: Long,

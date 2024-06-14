@@ -26,9 +26,9 @@ class MemberController(
 
     @PostMapping("/password-check")
     fun passwordCheck(
-        @RequestBody password: String
+        @RequestBody request: MemberPasswordRequest
     ): ResponseEntity<Unit> {
-        memberService.passwordCheck(password)
+        memberService.passwordCheck(request)
         return ResponseEntity.status(HttpStatus.OK).build()
     }
 

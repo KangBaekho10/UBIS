@@ -41,7 +41,7 @@ class ProductController(
     }
 
     @PostMapping
-    // @PreAuthorize("hasRole('BUSINESS')")
+    @PreAuthorize("hasRole('BUSINESS')")
     fun createProduct(
         @RequestBody request: CreateProductRequest
     ): ResponseEntity<ProductResponse> {
@@ -50,7 +50,7 @@ class ProductController(
 
 
     @PutMapping("/{productId}")
-    // @PreAuthorize("hasRole('BUSINESS')")
+    @PreAuthorize("hasRole('BUSINESS')")
     fun updateProduct(
         @PathVariable productId: Long, @RequestBody request: UpdateProductRequest
     ): ResponseEntity<ProductResponse> {
@@ -59,7 +59,7 @@ class ProductController(
 
 
     @DeleteMapping("/{productId}")
-    // @PreAuthorize("hasRole('BUSINESS')")
+    @PreAuthorize("hasRole('BUSINESS')")
     fun deleteProduct(
         @PathVariable productId: Long
     ): ResponseEntity<Unit> {

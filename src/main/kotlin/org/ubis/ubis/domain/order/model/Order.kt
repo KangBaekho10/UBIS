@@ -26,6 +26,7 @@ class Order(
     @Column(name = "member_id")
     var memberId: Long,
 
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     var product: Product

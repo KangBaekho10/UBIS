@@ -17,7 +17,10 @@ class Member(
     var role: Role = Role.CUSTOMER,
 
     @Column(name = "pw_history")
-    var pwHistory: String
+    var pwHistory: String,
+
+    @Column(name = "oauth_provider")
+    var oAuthProvider: String? = null
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
