@@ -1,6 +1,5 @@
 package org.ubis.ubis.domain.member.service
 
-import jakarta.validation.Valid
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -34,6 +33,10 @@ class MemberService(
         updateMemberRequest: UpdateMemberRequest
     ): MemberResponse {
         val memberId = getMemberIdFromToken()
+
+        if (getMemberJoinTypeFromToken() == "SOCIAL") {
+            throw IllegalStateException("소셜 회원은 회원정보를 수정할 수 없습니다.")
+        }
         val member = memberRepository.findByIdOrNull(memberId) ?: throw ModelNotFoundException("Member", memberId)
 
         if (updateMemberRequest.name != null) {
@@ -89,10 +92,11 @@ class MemberService(
         return memberRepository.save(
             Member(
                 email = request.email,
+                oAuthProvider = "email",
                 password = passwordEncoder.encode(request.password),
                 name = request.name,
                 phoneNumber = request.phoneNumber,
-                pwHistory = null.toString(),
+                pwHistory = passwordEncoder.encode(request.password),
                 role = when (request.role) {
                     "BUSINESS" -> Role.BUSINESS
                     "CUSTOMER" -> Role.CUSTOMER
@@ -114,46 +118,22 @@ class MemberService(
         return LoginResponse(
             accessToken = jwtPlugin.generateAccessToken(
                 subject = member.id.toString(),
-                name = member.name
-
+                role = member.role.toString(),
+                joinType = "STANDARD"
             )
         )
     }
 
-    @Transactional
-    fun createMember(createMemberRequest: CreateMemberRequest): MemberResponse {
-
-        val isExistEmail = memberRepository.existsByEmail(createMemberRequest.email)
-
-        if (isExistEmail) { // 이미 존재하는 이메일일 경우 예외 발생
-            throw AlreadyExistsException(createMemberRequest.email, "이메일")
-        }
-
-        val isExistPhoneNumber = memberRepository.existsByPhoneNumber(createMemberRequest.phoneNumber)
-
-        if (isExistPhoneNumber) { // 이미 존재하는 전화번호일 경우 예외 발생
-            throw AlreadyExistsException(createMemberRequest.phoneNumber, "전화번호")
-        }
-
-        val password = passwordEncoder.encode(createMemberRequest.password)
-
-        return memberRepository.save(
-            Member(
-                name = createMemberRequest.name,
-                email = createMemberRequest.email,
-                password = password,
-                phoneNumber = createMemberRequest.phoneNumber,
-                pwHistory = password
-            )
-        ).toResponse()
-
-    }
-
-    fun passwordCheck(password: String) {
+    fun passwordCheck(request: MemberPasswordRequest) {
         val memberId = getMemberIdFromToken()
+
+        if (getMemberJoinTypeFromToken() == "SOCIAL") {
+            throw IllegalStateException("소셜 회원은 비밀번호가 없으므로 확인할 수 없습니다.")
+        }
+
         val member = memberRepository.findByIdOrNull(memberId) ?: throw ModelNotFoundException("Member", memberId)
 
-        if (!passwordEncoder.matches(password, member.password)) {
+        if (!passwordEncoder.matches(request.password, member.password)) {
             throw IllegalArgumentException("비밀번호가 일치하지 않습니다.")
         }
     }
@@ -169,6 +149,11 @@ class MemberService(
     fun getMemberIdFromToken(): Long? {
         val principal = SecurityContextHolder.getContext().authentication.principal as UserPrincipal
         return principal.id
+    }
+
+    fun getMemberJoinTypeFromToken(): String {
+        val principal = SecurityContextHolder.getContext().authentication.principal as UserPrincipal
+        return principal.joinType
     }
 
     fun matchMemberId(memberId: Long): Boolean { // Token의 ID와 파라미터ID를 비교

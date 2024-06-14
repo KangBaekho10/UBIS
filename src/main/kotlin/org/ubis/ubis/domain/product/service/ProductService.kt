@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import org.ubis.ubis.domain.exception.ModelNotFoundException
 import org.ubis.ubis.domain.member.service.MemberService
 import org.ubis.ubis.domain.product.dto.CreateProductRequest
 import org.ubis.ubis.domain.product.dto.ProductResponse
@@ -19,13 +20,9 @@ class ProductService(
     private val memberService: MemberService
 ) {
 
-    fun searchProductList(pageable: Pageable,name:String?):Page<ProductResponse> {
-        return productRepository.findProductList(pageable,name).map { it.toProductResponse() }
-    }
-
     fun getProductEntity(productId:Long):Product{
         return productRepository.findByIdOrNull(productId)
-            ?: throw RuntimeException("Product with ID $productId not found")
+            ?: throw ModelNotFoundException("getProductEntity", productId)
     }
 
     fun getProductList(pageable: Pageable,name:String?): Page<ProductResponse> {
@@ -34,7 +31,7 @@ class ProductService(
 
     fun getProduct(productId: Long): ProductResponse {
         val result = productRepository.findByIdOrNull(productId)
-            ?: throw RuntimeException("Product with ID $productId not found")
+            ?: throw ModelNotFoundException("getProduct", productId)
         return result.toProductResponse()
     }
 
@@ -54,9 +51,9 @@ class ProductService(
     @Transactional
     fun updateProduct(productId: Long, request: UpdateProductRequest): ProductResponse {
         val result = productRepository.findByIdOrNull(productId)
-            ?: throw RuntimeException("Product with ID $productId not found")
+            ?: throw ModelNotFoundException("updateProduct", productId)
         if(!memberService.matchMemberId(result.memberId))
-            throw RuntimeException("남의 것을 수정하려 하다니 못난놈!")
+            throw IllegalArgumentException("MemberInfo do not match")
         result.name = request.name
         result.description = request.description
         result.price = request.price
@@ -67,9 +64,9 @@ class ProductService(
     @Transactional
     fun deleteProduct(productId: Long) {
         val result = productRepository.findByIdOrNull(productId)
-            ?: throw RuntimeException("Product with ID $productId not found")
+            ?: throw ModelNotFoundException("deleteProduct", productId)
         if(!memberService.matchMemberId(result.memberId))
-            throw RuntimeException("남의 것을 삭제하려 하다니 못난놈!")
+            throw IllegalArgumentException("MemberInfo do not match")
         return productRepository.delete(result)
     }
 }

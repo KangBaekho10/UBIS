@@ -2,17 +2,18 @@ package org.ubis.ubis.security.oauthlogin.service
 
 import org.springframework.stereotype.Service
 import org.springframework.web.reactive.function.client.WebClient
+import org.ubis.ubis.domain.member.model.Role
 import org.ubis.ubis.security.jwt.JwtPlugin
 import org.ubis.ubis.security.oauth.kakao.KakaoOAuthClient
 import org.ubis.ubis.security.oauth.naver.NaverOAuthClient
-import org.ubis.ubis.security.oauthlogin.model.SocialMember
-import org.ubis.ubis.security.oauthlogin.repository.SocialRepository
+import org.ubis.ubis.domain.member.repository.MemberRepository
+import org.ubis.ubis.domain.member.model.Member
 
 @Service
 class OAuthService(
     private val kakaoOAuthClient: KakaoOAuthClient,
     private val naverOAuthClient: NaverOAuthClient,
-    private val socialRepository: SocialRepository,
+    private val memberRepository: MemberRepository,
     private val jwtPlugin: JwtPlugin
 ) {
     fun getNaverLoginPage(): String {
@@ -34,17 +35,22 @@ class OAuthService(
             .block() // 동기 방식으로 변경
 
         val naverAccount = userInfo?.get("response") as Map<*, *>
-        val nickname = naverAccount["name"] as String
+        val email = naverAccount["email"].toString()
+        val nickname = naverAccount["nickname"].toString()// as String
 
-        val socialMembers = (socialRepository.findByName(nickname)
-            ?: socialRepository.save(
-                SocialMember(
+        val members = (memberRepository.findByEmail(email)
+            ?: memberRepository.save(
+                Member(
                     name = nickname,
                     oAuthProvider = "naver",
+                    email = email,
+                    password = " ",
+                    pwHistory = " ",
+                    role = Role.CUSTOMER
                 )
             ))
 
-        return jwtPlugin.generateAccessToken("name", socialMembers.name)
+        return jwtPlugin.generateAccessToken(members.id.toString(),"CUSTOMER","SOCIAL")
     }
 
     fun kakaoLogin(code: String): String {
@@ -60,16 +66,22 @@ class OAuthService(
 
         val kakaoAccount = userInfo?.get("kakao_account") as Map<*, *>
         val profile = kakaoAccount["profile"] as Map<*, *>
+        val email = kakaoAccount["email"].toString()
         val nickname = profile["nickname"].toString()
 
-        val socialMember = (socialRepository.findByName(nickname)
-            ?: socialRepository.save(
-                SocialMember(
+        val members = (memberRepository.findByEmail(email)
+            ?: memberRepository.save(
+                Member(
                     name = nickname,
                     oAuthProvider = "kakao",
+                    email = email,
+                    password = " ",
+//                    phoneNumber = " ",
+                    pwHistory = " ",
+                    role = Role.CUSTOMER
                 )
             ))
 
-        return jwtPlugin.generateAccessToken("userName", socialMember.name)
+        return jwtPlugin.generateAccessToken(members.id.toString(), "CUSTOMER", "SOCIAL")
     }
 }

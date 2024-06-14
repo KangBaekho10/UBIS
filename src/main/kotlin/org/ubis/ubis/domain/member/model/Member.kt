@@ -11,13 +11,16 @@ class Member(
     var password: String,
 
     @Column(name = "phone_number")
-    var phoneNumber: String,
+    var phoneNumber: String? = null,
 
     @Enumerated(EnumType.STRING)
     var role: Role = Role.CUSTOMER,
 
     @Column(name = "pw_history")
-    var pwHistory: String
+    var pwHistory: String,
+
+    @Column(name = "oauth_provider")
+    var oAuthProvider: String? = null
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,7 +32,7 @@ fun Member.toResponse(): MemberResponse {
         id = id!!,
         email = email,
         name = name,
-        phoneNumber = phoneNumber,
+        phoneNumber = phoneNumber.toString(),
         role = role
     )
 }

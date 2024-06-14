@@ -1,9 +1,9 @@
 package org.ubis.ubis.domain.review.service
 
-import jakarta.persistence.EntityNotFoundException
 import jakarta.transaction.Transactional
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import org.ubis.ubis.domain.exception.ModelNotFoundException
 import org.ubis.ubis.domain.member.service.MemberService
 import org.ubis.ubis.domain.order.service.OrderService
 import org.ubis.ubis.domain.product.service.ProductService
@@ -20,29 +20,32 @@ class ReviewService(
 
     @Transactional
     fun createReview(productId:Long, request: ReviewRequest): ReviewResponse {
-        val memberId=memberService.getMemberIdFromToken()!!
-        if(!orderService.existsOrder(productId,memberId))
-            throw RuntimeException("구매자가 아님")
-        if(repository.existsByProductIdAndMemberId(productId,memberId))
-            throw RuntimeException("중복리뷰 불가")
+        val member=memberService.getMember()
+        if(!orderService.existsOrder(productId,member.id))
+            throw IllegalArgumentException("OrderInfo Not Exists")
+        if(repository.existsByProductIdAndMemberId(productId,member.id))
+            throw IllegalArgumentException("Review Exists")
         return productService.getProductEntity(productId)
-            .let { repository.save(toEntity(it,request,memberId)) }
-            .toResponse()
+            .let { repository.save(toEntity(it,request,member.id)) }
+            .toResponse(member.name)
     }
 
     fun getReviewList(productId:Long): List<ReviewResponse>{
-        return repository.findByProductId(productId)
-            .map { it.toResponse() }
+        val result=repository.findMemberName(productId, memberService.getMemberIdFromToken()!!)
+        return result.map {
+            it.first!!.toResponse(it.second.toString())
+        }
     }
 
     @Transactional
-    fun updateReview(productId:Long, reviewId:Long,request: ReviewRequest):Unit{
+    fun updateReview(productId:Long, reviewId:Long,request: ReviewRequest): ReviewResponse{
         return  repository.findByIdOrNull(reviewId)
             ?.let {
                 if(!memberService.matchMemberId(it.memberId))
-                    throw RuntimeException("매칭되지 않았음")
+                    throw IllegalArgumentException("MemberInfo do not match")
                 it.content=request.content
-            }?: throw EntityNotFoundException("not found")
+                it.toResponse(memberService.getMember().name)
+            }?: throw ModelNotFoundException("updateReview",reviewId)
     }
 
     @Transactional
@@ -50,8 +53,8 @@ class ReviewService(
         return  repository.findByIdOrNull(reviewId)
             ?.let {
                 if(!memberService.matchMemberId(it.memberId))
-                    throw RuntimeException("매칭되지 않았음")
+                    throw IllegalArgumentException("MemberInfo do not match")
                 repository.deleteById(reviewId)
-            }?: throw EntityNotFoundException("not found")
+            }?: throw ModelNotFoundException("deleteReview",reviewId)
     }
 }
