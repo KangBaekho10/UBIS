@@ -3,7 +3,7 @@ package org.ubis.ubis.domain.order.service
 import jakarta.transaction.Transactional
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
-import org.ubis.ubis.domain.member.model.Member
+import org.ubis.ubis.domain.exception.ModelNotFoundException
 import org.ubis.ubis.domain.member.model.Role
 import org.ubis.ubis.domain.member.repository.MemberRepository
 import org.ubis.ubis.domain.member.service.MemberService
@@ -25,14 +25,14 @@ class OrderService(
         val memberId = memberService.getMemberIdFromToken()!!
         var orders = mutableListOf<OrderResponse>()
         when(memberService.getMember().role) {
-            Role.CUSTOMER -> {//함수화
-                val memberName = memberService.getMember().name!!
+            Role.CUSTOMER -> {
+                val memberName = memberService.getMember().name
                 orders = orderRepository.findAllByMemberId(memberId)
                     .map { it.toOrderResponse(memberName) }
                     .toMutableList()
             }
 
-            Role.BUSINESS -> {//함수화
+            Role.BUSINESS -> {
                 orders = orderRepository.findOrderList(memberId).map {
                     it.first!!.toOrderResponse(it.second!!)
                 }.toMutableList()
@@ -43,8 +43,9 @@ class OrderService(
 
     fun getOrder(productId: Long, orderId: Long): OrderResponse {
         val result = orderRepository.findByProductIdAndId(productId, orderId)
-            ?: throw RuntimeException("Product with ID $orderId not found")
-        val member = memberRepository.findById(result.memberId) as Member
+            ?: throw ModelNotFoundException("getOrder",orderId)
+        val member = memberRepository.findByIdOrNull(result.memberId)
+            ?: throw ModelNotFoundException("getOrder",result.memberId)
         return result.toOrderResponse(member.name)
     }
 
@@ -56,7 +57,7 @@ class OrderService(
     fun createOrder(productId: Long): OrderResponse {
         val product =
             productRepository.findByIdOrNull(productId)
-                ?: throw RuntimeException("Product with ID $productId not found")
+                ?: throw ModelNotFoundException("getOrder",productId)
         val order = Order(
             productPrice = product.price,
             product = product,
@@ -72,9 +73,9 @@ class OrderService(
     @Transactional
     fun deleteOrder(productId: Long, orderId: Long) {
         val product = productRepository.findByIdOrNull(productId)
-            ?: throw RuntimeException("Product with ID $productId not found")
+            ?: throw ModelNotFoundException("deleteOrder Product",productId)
         val order = orderRepository.findByIdOrNull(orderId)
-            ?: throw RuntimeException("Order with ID $orderId not found")
+            ?: throw ModelNotFoundException("deleteOrder Order",orderId)
 
         val isGood= when( memberService.getMember().role){
             Role.CUSTOMER -> {
@@ -84,7 +85,7 @@ class OrderService(
                 memberService.matchMemberId(product.memberId)
             }
         }
-        if(!isGood) throw RuntimeException("권한없음")
+        if(!isGood) throw IllegalArgumentException("Not Match Role")
 
         product.deleteOrder(order)
         productRepository.save(product)

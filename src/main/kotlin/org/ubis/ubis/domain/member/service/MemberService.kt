@@ -28,12 +28,6 @@ class MemberService(
         return member.toResponse()
     }
 
-    fun getMember(memberId: Long): MemberResponse {
-        val memberId = getMemberIdFromToken()
-        val member = memberRepository.findByIdOrNull(memberId) ?: throw ModelNotFoundException("Member", memberId)
-        return member.toResponse()
-    }
-
     @Transactional
     fun updateMember(
         updateMemberRequest: UpdateMemberRequest
@@ -126,36 +120,6 @@ class MemberService(
         )
     }
 
-    @Transactional
-    fun createMember(createMemberRequest: CreateMemberRequest): MemberResponse {
-
-        val isExistEmail = memberRepository.existsByEmail(createMemberRequest.email)
-
-        if (isExistEmail) { // 이미 존재하는 이메일일 경우 예외 발생
-            throw AlreadyExistsException(createMemberRequest.email, "이메일")
-        }
-
-        val isExistPhoneNumber = memberRepository.existsByPhoneNumber(createMemberRequest.phoneNumber)
-
-        if (isExistPhoneNumber) { // 이미 존재하는 전화번호일 경우 예외 발생
-            throw AlreadyExistsException(createMemberRequest.phoneNumber, "전화번호")
-        }
-
-        val password = passwordEncoder.encode(createMemberRequest.password)
-
-        return memberRepository.save(
-            Member(
-                name = createMemberRequest.name,
-                oAuthProvider = "email",
-                email = createMemberRequest.email,
-                password = password,
-                phoneNumber = createMemberRequest.phoneNumber,
-                pwHistory = password
-            )
-        ).toResponse()
-
-    }
-
     fun passwordCheck(request: MemberPasswordRequest) {
         val memberId = getMemberIdFromToken()
         val member = memberRepository.findByIdOrNull(memberId) ?: throw ModelNotFoundException("Member", memberId)
@@ -180,10 +144,5 @@ class MemberService(
 
     fun matchMemberId(memberId: Long): Boolean { // Token의 ID와 파라미터ID를 비교
         return getMemberIdFromToken() == memberId
-    }
-
-    fun getJoinTypeFromToken(): String? {
-        val principal = SecurityContextHolder.getContext().authentication.principal as UserPrincipal
-        return principal.joinType
     }
 }
