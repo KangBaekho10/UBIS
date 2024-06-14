@@ -33,10 +33,12 @@ class JwtAuthenticationFilter(
                 .onSuccess {
                     val id = it.payload.subject.toLong()
                     val role = it.payload.get("role", String::class.java)
+                    val joinType = it.payload.get("joinType", String::class.java)
 
                     val principal = UserPrincipal(
                         id = id,
-                        role = setOf(role)
+                        role = setOf(role),
+                        joinType= joinType
                     )
                     val authentication = JwtAuthenticationToken(
                         principal = principal,

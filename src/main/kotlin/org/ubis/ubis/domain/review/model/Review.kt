@@ -20,6 +20,7 @@ class Review(
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     val product: Product,
+
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

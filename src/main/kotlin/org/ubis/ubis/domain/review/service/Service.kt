@@ -7,12 +7,12 @@ import org.ubis.ubis.domain.review.dto.ReviewResponse
 import org.ubis.ubis.domain.review.model.Review
 
 
-fun Review.toResponse()
+fun Review.toResponse(memberName:String)
         : ReviewResponse {
     return ReviewResponse(
         id = id!!,
         content=content,
-        writer = "",
+        writer = memberName,
         createdAt = createdAt.toString(),
     )
 }

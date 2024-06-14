@@ -28,6 +28,12 @@ class MemberService(
         return member.toResponse()
     }
 
+    fun getMember(memberId: Long): MemberResponse {
+        val memberId = getMemberIdFromToken()
+        val member = memberRepository.findByIdOrNull(memberId) ?: throw ModelNotFoundException("Member", memberId)
+        return member.toResponse()
+    }
+
     @Transactional
     fun updateMember(
         updateMemberRequest: UpdateMemberRequest

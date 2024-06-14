@@ -39,10 +39,10 @@ class Order(
 
 }
 
-fun Order.toOrderResponse(): OrderResponse = OrderResponse(
+fun Order.toOrderResponse(memberName: String): OrderResponse = OrderResponse(
     id = id!!,
     createdAt = createdAt,
     productPrice = productPrice,
     productName = product.name,
-    memberName = memberId.toString(),
+    memberName = memberName,
 )
