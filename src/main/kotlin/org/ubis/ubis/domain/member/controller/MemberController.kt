@@ -13,12 +13,6 @@ class MemberController(
     private val memberService: MemberService
 ) {
 
-//    @PostMapping
-//    fun createMember(@Valid @RequestBody createMemberRequest: CreateMemberRequest): ResponseEntity<String> {
-//        memberService.createMember(createMemberRequest)
-//        return ResponseEntity.status(HttpStatus.CREATED).body("회원가입이 완료되었습니다.")
-//    }
-
     @GetMapping
     fun getMember(): ResponseEntity<MemberResponse> {
         return ResponseEntity.status(HttpStatus.OK).body(memberService.getMember())

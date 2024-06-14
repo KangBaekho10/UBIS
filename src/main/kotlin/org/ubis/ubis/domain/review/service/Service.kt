@@ -1,6 +1,5 @@
 package org.ubis.ubis.domain.review.service
 
-import org.ubis.ubis.domain.member.model.Role
 import org.ubis.ubis.domain.product.model.Product
 import org.ubis.ubis.domain.review.dto.ReviewRequest
 import org.ubis.ubis.domain.review.dto.ReviewResponse

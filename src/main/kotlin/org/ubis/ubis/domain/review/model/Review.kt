@@ -2,7 +2,6 @@ package org.ubis.ubis.domain.review.model
 
 import jakarta.persistence.*
 import org.ubis.ubis.domain.product.model.Product
-import org.ubis.ubis.domain.review.dto.ReviewResponse
 import java.time.LocalDateTime
 
 @Entity
