@@ -39,7 +39,7 @@ class ReviewController(
         @PathVariable productId: Long,
         @PathVariable reviewId: Long,
         @RequestBody request: ReviewRequest
-    ):ResponseEntity<Unit>{
+    ):ResponseEntity<ReviewResponse>{
         return ResponseEntity
             .status(HttpStatus.OK)
             .body(reviewService.updateReview(productId,reviewId, request))
