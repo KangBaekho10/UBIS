@@ -1,4 +1,4 @@
-![header](https://capsule-render.vercel.app/api?type=waving&text=n.Pureun&height=200&color=73C2FB&animation=fadeIn&fontColor=003153)
+![header](https://capsule-render.vercel.app/api?type=waving&text=UBIS&height=200&color=73C2FB&animation=fadeIn&fontColor=003153)
 
 # 🖥 UBIS 🖥
 ### DL게임을 온라인에서 파는 쇼핑몰입니다.  
