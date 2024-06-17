@@ -1,0 +1,18 @@
+auth:
+  jwt:
+    issuer: "UBIS"
+    secret: "Y2g0bmp1bidzIGp3dCBzZWNyZXQga2V5Y2g0bmp1bidzIGp3dCBzZWNyZXQga2V5Y2g0bmp1bidzIGp3dCBzZWNyZXQga2V5"
+    accessTokenExpirationHour: 168
+
+jwt:
+  secret_key: "Y2g0bmp1bidzIGp3dCBzZWNyZXQga2V5Y2g0bmp1bidzIGp3dCBzZWNyZXQga2V5Y2g0bmp1bidzIGp3dCBzZWNyZXQga2V5"
+oauth2:
+  kakao:
+    client_id: "46b2bea914ad0bd9ccb080d5c6aa640b"
+    redirect_url: "http://localhost:8080/oauth2/callback/kakao"
+    auth_server_base_url: "https://kauth.kakao.com"
+    resource_server_base_url: "https://kapi.kakao.com"
+  naver:
+    client_id: "Gdytgr_ylEEQDyuCEqjS"
+    client_secret: "LbPjRpNG1C"
+    redirect_url: "http://localhost:8080/oauth2/callback/naver"
